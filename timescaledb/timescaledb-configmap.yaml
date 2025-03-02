@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: timescaledb-configmap
+  namespace: database
+  labels:
+    app: timescaledb
+data:
+  POSTGRES_DB: timescaledb
+  POSTGRES_USER: admin
+  POSTGRES_PASSWORD: secret
+  PGDATA: /var/lib/timescaledb/data
