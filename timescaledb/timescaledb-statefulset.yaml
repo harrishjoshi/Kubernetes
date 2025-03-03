@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: timescaledb
+  namespace: database
+spec:
+  serviceName: timescaledb
+  replicas: 2
+  selector:
+    matchLabels:
+      app: timescaledb
+  template:
+    metadata:
+      labels:
+        app: timescaledb
+    spec:
+      initContainers:
+        - name: fix-permissions
+          image: busybox
+          command:
+            - sh
+            - -c
+            - mkdir -p /var/lib/timescaledb/data && chown -R 70:70 /var/lib/timescaledb/data
+          volumeMounts:
+            - name: timescaledb-data
+              mountPath: /var/lib/timescaledb/data
+      containers:
+        - name: timescaledb
+          image: timescale/timescaledb:latest-pg16
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+              name: timescaledb
+          envFrom:
+            - configMapRef:
+                name: timescaledb-configmap
+            - secretRef:
+                name: timescaledb-secret
+          volumeMounts:
+            - mountPath: /var/lib/timescaledb/data
+              name: timescaledb-data
+  volumeClaimTemplates:
+    - metadata:
+        name: timescaledb-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 4Gi

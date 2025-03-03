@@ -3,12 +3,10 @@ kind: PersistentVolumeClaim
 metadata:
   name: timescaledb-pvc
   namespace: database
-  labels:
-    app: timescaledb
 spec:
-  storageClassName: manual
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 4Gi
+  storageClassName: timescaledb-storage
