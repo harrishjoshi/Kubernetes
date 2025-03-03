@@ -8,5 +8,4 @@ metadata:
 data:
   POSTGRES_DB: timescaledb
   POSTGRES_USER: admin
-  POSTGRES_PASSWORD: secret
   PGDATA: /var/lib/timescaledb/data
